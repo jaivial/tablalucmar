@@ -1,0 +1,148 @@
+---
+import * as mysql from "mysql2/promise";
+
+export const prerender = true;
+
+let totalRows = 0;
+let data = [];
+let filteredData = [];
+
+export async function getData(datos) {
+    let connection;
+    const offset = 0;
+    const limit = 100;
+    console.log("tu data es", datos);
+    try {
+        connection = await mysql.createConnection({
+            host: "srv747.hstgr.io",
+            port: "3306",
+            user: "u212050690_Jaivial",
+            password: "Jva_Mvc_5171",
+            database: "u212050690_Astrodatabase",
+        });
+        console.log("tu data es", datos);
+        console.log("Conexión a la base de datos establecida con éxito.");
+
+        if (datos == "") {
+            const [rows] = await connection.execute(
+                "SELECT id, direccion, tipo, uso, superficie, ano_construccion FROM inmuebles ORDER BY direccion ASC LIMIT ?, ?",
+                [offset, limit],
+            );
+            const [count] = await connection.execute(
+                "SELECT COUNT(*) AS count FROM inmuebles",
+            );
+
+            const totalRows = count[0].count;
+
+            return { rows, totalRows };
+        } else {
+            const [rows] = await connection.execute(
+                "SELECT id, direccion, tipo, uso, superficie, ano_construccion FROM inmuebles WHERE LOWER(direccion) LIKE ? LIMIT ?, ?",
+                [`%${datos}%`, offset, limit],
+            );
+            const [count] = await connection.execute(
+                "SELECT COUNT(*) AS count FROM inmuebles WHERE LOWER(direccion) LIKE ?",
+                [`%${datos}%`],
+            );
+
+            const totalRows = count[0].count;
+
+            return { rows, totalRows };
+        }
+    } catch (error) {
+        console.error("Error al obtener datos:", error);
+        throw error; // Re-throw the error after logging it
+    } finally {
+        if (connection) {
+            await connection.end();
+            console.log("Conexión a la base de datos cerrada.");
+        }
+    }
+}
+
+if (Astro.request.method === "POST") {
+    try {
+        const datos = await Astro.request.formData();
+        const query = datos.get("query");
+
+        console.log("tu query es", query);
+
+        const result = await getData(query);
+        data = result.rows;
+        totalRows = result.totalRows;
+        filteredData = [...data];
+        // Do something with the data
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message);
+        }
+    }
+}
+---
+
+<div class="w-full flex flex-col items-center justify-center">
+    <form method="POST" class="flex flex-col items-center justify-center gap-3 md:flex-row md:gap-0 md:items-center md:justify-around md:w-full md:text-center">
+        <label class="text-white text-2xl mr-2" htmlFor="input-text">Escribe la dirección:</label>
+        <input
+            type="text"
+            id="input-text"
+            name="query"
+            placeholder="Dirección"
+            class="text-black rounded-md border-2 border-gray-300 px-3 py-2 w-[400px]"
+        />
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md ml-3" type="submit">Buscar</button>
+    </form>
+
+    <table class="w-full border-collapse mt-9">
+        <thead>
+            <tr>
+                <th
+                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    >Dirección</th
+                >
+                <th
+                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    >Tipo</th
+                >
+                <th
+                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    >Uso</th
+                >
+                <th
+                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    >Superficie</th
+                >
+                <th
+                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    >Año de construcción</th
+                >
+            </tr>
+        </thead>
+        <tbody>
+            {
+                filteredData.map((row) => (
+                    <tr
+                        class="border-gray-900 border-4 bg-slate-600"
+                        key={row.id}
+                    >
+                        <td class="text-center px-2 py-2 text-sm sm:text-base md:text-xl">
+                            {row.direccion}
+                        </td>
+                        <td class="text-center px-4 py-2 text-sm sm:text-base md:text-xl">
+                            {row.tipo}
+                        </td>
+                        <td class="text-center px-4 py-2 text-sm sm:text-base md:text-xl">
+                            {row.uso}
+                        </td>
+                        <td class="text-center px-4 py-2 text-sm sm:text-base md:text-xl">
+                            {row.superficie}
+                        </td>
+                        <td class="text-center px-4 py-2 text-sm sm:text-base md:text-xl">
+                            {row.ano_construccion}
+                        </td>
+                    </tr>
+                ))
+            }
+        </tbody>
+    </table>
+</div>
