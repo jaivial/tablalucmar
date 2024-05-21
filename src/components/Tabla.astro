@@ -1,5 +1,6 @@
 ---
 import * as mysql from "mysql2/promise";
+import toast, { Toaster } from 'react-hot-toast';
 
 export const prerender = true;
 
@@ -7,10 +8,12 @@ let totalRows = 0;
 let data = [];
 let filteredData = [];
 
+
 export async function getData(datos) {
     let connection;
     const offset = 0;
     const limit = 100;
+   let cargado = false;
     console.log("tu data es", datos);
     try {
         connection = await mysql.createConnection({
@@ -33,8 +36,11 @@ export async function getData(datos) {
             );
 
             const totalRows = count[0].count;
+            
+            console.log("cargado", cargado);
 
             return { rows, totalRows };
+
         } else {
             const [rows] = await connection.execute(
                 "SELECT id, direccion, tipo, uso, superficie, ano_construccion FROM inmuebles WHERE LOWER(direccion) LIKE ? LIMIT ?, ?",
@@ -46,7 +52,9 @@ export async function getData(datos) {
             );
 
             const totalRows = count[0].count;
-
+            cargado = true;
+            console.log("cargado", cargado);
+           
             return { rows, totalRows };
         }
     } catch (error) {
@@ -82,6 +90,7 @@ export async function getDataNoQuery() {
         );
 
         const totalRows = count[0].count;
+        alert("Total de registros: " + totalRows);
 
         return { rows, totalRows };
     } catch (error) {
@@ -121,6 +130,7 @@ if (Astro.request.method === "POST") {
 ---
 
 <div class="overflow-x-hiden mt-3 w-full flex flex-col items-center justify-center overflow-hidden md:w-[80%]">
+
     <form
         method="POST"
         class="flex flex-col items-center justify-center gap-3 md:flex-row md:gap-0 md:items-center md:justify-around md:w-full md:text-center"
@@ -144,26 +154,26 @@ if (Astro.request.method === "POST") {
     <table class="mt-6">
         <thead>
             <tr
-                class="text-center px-1 py-1 text-sm sm:text-base md:text-xl bg-slate-200 text-black w-auto"
+                class="text-center px-1 py-1 text-xs sm:text-base md:text-xl bg-slate-200 text-black w-auto"
             >
                 <th
-                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
+                    class="text-center px-1 py-1 text-xs sm:text-sm md:text-xl"
                     >Dirección</th
                 >
                 <th
-                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
+                    class="text-center px-1 py-1 text-xs sm:text-sm md:text-xl"
                     >Tipo</th
                 >
                 <th
-                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
+                    class="text-center px-1 py-1 text-xs sm:text-sm md:text-xl"
                     >Uso</th
                 >
                 <th
-                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
+                    class="text-center px-1 py-1 text-xs sm:text-sm md:text-xl"
                     >Superficie</th
                 >
                 <th
-                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
+                    class="text-center px-1 py-1 text-xs sm:text-sm md:text-xl"
                     >Año de construcción</th
                 >
             </tr>
