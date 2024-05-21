@@ -13,7 +13,7 @@ export async function getData(datos) {
     let connection;
     const offset = 0;
     const limit = 100;
-   let cargado = false;
+
     console.log("tu data es", datos);
     try {
         connection = await mysql.createConnection({
@@ -37,7 +37,7 @@ export async function getData(datos) {
 
             const totalRows = count[0].count;
             
-            console.log("cargado", cargado);
+
 
             return { rows, totalRows };
 
@@ -52,9 +52,7 @@ export async function getData(datos) {
             );
 
             const totalRows = count[0].count;
-            cargado = true;
-            console.log("cargado", cargado);
-           
+         
             return { rows, totalRows };
         }
     } catch (error) {
@@ -90,7 +88,7 @@ export async function getDataNoQuery() {
         );
 
         const totalRows = count[0].count;
-        alert("Total de registros: " + totalRows);
+
 
         return { rows, totalRows };
     } catch (error) {
@@ -206,3 +204,4 @@ if (Astro.request.method === "POST") {
         </tbody>
     </table>
 </div>
+
