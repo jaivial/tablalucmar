@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Tabla from '../components/Tabla.astro';
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout class="w-full flex flex-col items-center justify-center overflow-x-hidden" title="Welcome to Astro.">
 	<main>
 		
 			<path
@@ -27,18 +27,26 @@ import Tabla from '../components/Tabla.astro';
 		</svg>
 		<h1>Bienvenido a <span class="text-gradient">Lucmar</span></h1>
 		
-		<Tabla />
+		<Tabla 
+		class="overflow-x-hidden"
+		/>
+		</main>
 </Layout>
 
 <style>
 	main {
 		margin: auto;
 		padding: 1rem;
-		width: 900px;
-		max-width: calc(100% - 2rem);
+		width: 100%;
+		max-width: calc(100% - 0.5rem);
 		color: white;
 		font-size: 20px;
 		line-height: 1.6;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		overflow-x: hidden;
 	}
 	.astro-a {
 		position: absolute;

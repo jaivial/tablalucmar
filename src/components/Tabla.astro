@@ -73,18 +73,17 @@ export async function getDataNoQuery() {
         });
         console.log("Conexión a la base de datos establecida con éxito.");
 
-            const [rows] = await connection.execute(
-                "SELECT id, direccion, tipo, uso, superficie, ano_construccion FROM inmuebles ORDER BY direccion ASC LIMIT ?, ?",
-                [offset, limit],
-            );
-            const [count] = await connection.execute(
-                "SELECT COUNT(*) AS count FROM inmuebles",
-            );
+        const [rows] = await connection.execute(
+            "SELECT id, direccion, tipo, uso, superficie, ano_construccion FROM inmuebles ORDER BY direccion ASC LIMIT ?, ?",
+            [offset, limit],
+        );
+        const [count] = await connection.execute(
+            "SELECT COUNT(*) AS count FROM inmuebles",
+        );
 
-            const totalRows = count[0].count;
+        const totalRows = count[0].count;
 
-            return { rows, totalRows };
-       
+        return { rows, totalRows };
     } catch (error) {
         console.error("Error al obtener datos:", error);
         throw error; // Re-throw the error after logging it
@@ -112,49 +111,59 @@ if (Astro.request.method === "POST") {
         if (error instanceof Error) {
             console.error(error.message);
         }
-    } 
-} else {
-        const result = await getDataNoQuery();
-        data = result.rows;
-        totalRows = result.totalRows;
-        filteredData = [...data];
     }
+} else {
+    const result = await getDataNoQuery();
+    data = result.rows;
+    totalRows = result.totalRows;
+    filteredData = [...data];
+}
 ---
 
-<div class="w-full flex flex-col items-center justify-center">
-    <form method="POST" class="flex flex-col items-center justify-center gap-3 md:flex-row md:gap-0 md:items-center md:justify-around md:w-full md:text-center">
-        <label class="text-white text-2xl mr-2" htmlFor="input-text">Escribe la dirección:</label>
+<div class="overflow-x-hiden mt-3 w-full flex flex-col items-center justify-center overflow-hidden md:w-[80%]">
+    <form
+        method="POST"
+        class="flex flex-col items-center justify-center gap-3 md:flex-row md:gap-0 md:items-center md:justify-around md:w-full md:text-center"
+    >
+        <label class="text-white text-2xl mr-2" htmlFor="input-text"
+            >Escribe la dirección:</label
+        >
         <input
             type="text"
             id="input-text"
             name="query"
             placeholder="Dirección"
-            class="text-black rounded-md border-2 border-gray-300 px-3 py-2 w-[400px]"
+            class="text-black rounded-md border-2 border-gray-300 px-3 py-2 w-[80%]"
         />
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md ml-3" type="submit">Buscar</button>
+        <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md ml-3"
+            type="submit">Buscar</button
+        >
     </form>
 
-    <table class="w-full border-collapse mt-9">
+    <table class="mt-6">
         <thead>
-            <tr>
+            <tr
+                class="text-center px-1 py-1 text-sm sm:text-base md:text-xl bg-slate-200 text-black w-auto"
+            >
                 <th
-                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
                     >Dirección</th
                 >
                 <th
-                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
                     >Tipo</th
                 >
                 <th
-                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
                     >Uso</th
                 >
                 <th
-                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
                     >Superficie</th
                 >
                 <th
-                    class="bg-gray-200 text-black border-b text-sm sm:text-base md:text-xl border-black py-2"
+                    class="text-center px-1 py-1 text-sm sm:text-base md:text-xl"
                     >Año de construcción</th
                 >
             </tr>
@@ -163,22 +172,22 @@ if (Astro.request.method === "POST") {
             {
                 filteredData.map((row) => (
                     <tr
-                        class="border-gray-900 border-4 bg-slate-600"
+                        class="border-gray-900 border-4 bg-slate-600 overflow-hidden w-full"
                         key={row.id}
                     >
-                        <td class="text-center px-2 py-2 text-sm sm:text-base md:text-xl">
+                        <td class="text-center px-2 py-2 text-xs sm:text-sm md:text-xl">
                             {row.direccion}
                         </td>
-                        <td class="text-center px-4 py-2 text-sm sm:text-base md:text-xl">
+                        <td class="text-center px-2 py-2 text-xs sm:text-sm md:text-xl">
                             {row.tipo}
                         </td>
-                        <td class="text-center px-4 py-2 text-sm sm:text-base md:text-xl">
+                        <td class="text-center px-2 py-2 text-xs sm:text-sm md:text-xl">
                             {row.uso}
                         </td>
-                        <td class="text-center px-4 py-2 text-sm sm:text-base md:text-xl">
+                        <td class="text-center px-2 py-2 text-xs sm:text-sm md:text-xl">
                             {row.superficie}
                         </td>
-                        <td class="text-center px-4 py-2 text-sm sm:text-base md:text-xl">
+                        <td class="text-center px-2 py-2 text-xs sm:text-sm md:text-xl">
                             {row.ano_construccion}
                         </td>
                     </tr>
