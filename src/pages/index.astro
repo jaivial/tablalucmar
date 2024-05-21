@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Tabla from '../components/Tabla.astro';
-
+import Formulario from '../components/Formulario.jsx';
+import Table from '../components/Table.jsx';
 
 ---
 
@@ -28,7 +28,8 @@ import Tabla from '../components/Tabla.astro';
 			</defs>
 		</svg>
 		<h1>Bienvenido a <span class="text-gradient">Lucmar</span></h1>
-		<Tabla />
+		<Formulario client:load/>
+		<Table client:load/>
 		</main>
 </Layout>
 

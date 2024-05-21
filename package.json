@@ -18,8 +18,13 @@
     "@babel/preset-react": "^7.24.1",
     "astro": "^4.8.6",
     "astro-php": "^0.0.1",
+    "mysql": "^2.18.1",
     "mysql2": "^3.9.7",
     "react-hot-toast": "^2.4.1",
     "tailwindcss": "^3.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "php-loader": "^0.2.0"
   }
 }
